@@ -1,0 +1,46 @@
+
+from datetime import datetime
+
+import string
+from typing import List, Optional, TYPE_CHECKING
+
+from sqlalchemy import primarykey, ForeignKey, Float, Text,func,  nullable 
+from sqlalchemy import String, Integer, Boolean, DateTime
+from sqlalchemy.orm import Mapped
+from sqlalchemy.orm import mapped_column
+from sqlalchemy.orm import relationship
+
+from app.database.base import Base
+
+if TYPE_CHECKING:
+    from app.application.models import users
+    from app.employer_profile.models import employer_profile
+    from app.application.models import application
+    from app.employer_profile.models import job_post
+    from app.candidate_image import candidate
+
+
+
+
+
+class setting_personal(Base):
+    __tablename__ = "settings"
+
+users_id: Mapped [str] = mapped_column(String(100),primary_key=True)
+candidate_id: Mapped [str] = mapped_column(String(100),ForeignKey(primarykey))
+
+
+company_name: Mapped[str] = mapped_column(String(200), nullable=False)
+company_description: Mapped[Optional[str]] = mapped_column(String(500), nullable=True)
+
+about: Mapped[Optional[str]] = mapped_column(String(500), nullable=True)
+
+banner_image_url: Mapped[Optional[str]] = mapped_column(String(200), nullable=True)
+logo_url: Mapped[Optional[str]] = mapped_column(String(200), nullable=True)
+
+is_verified: Mapped[bool] = mapped_column(Boolean, default=False)
+    
+save_and_next: Mapped[Optional[str]] = mapped_column(String(200), nullable=True)
+
+#relationship
+users: Mapped[list["candidate"]]=relationship(back_populates="candidate")
