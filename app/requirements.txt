@@ -1,0 +1,31 @@
+# Install into a virtual environment:
+#     python3 -m venv venv && source venv/bin/activate
+#     pip install -r app/requirements.txt
+# Pinned exactly, tested together on Python 3.14.4.
+
+fastapi==0.141.1
+uvicorn[standard]==0.52.4
+python-multipart==0.0.32      # needed by OAuth2PasswordRequestForm
+
+SQLAlchemy==2.0.52
+asyncpg==0.31.0               # the "+asyncpg" half of DATABASE_URL; psycopg2 will not work
+greenlet==3.5.5               # SQLAlchemy's asyncio support runs on it
+
+pydantic==2.13.5
+pydantic-settings==2.15.0     # BaseSettings moved out of pydantic in v2
+email-validator==2.3.0        # needed by pydantic's EmailStr
+
+passlib==1.7.4
+PyJWT==2.13.0                 # pip installs "pyjwt", code says `import jwt`.
+                              # Do not also install python-jose -- both provide
+                              # a module named jwt and they shadow each other.
+
+bcrypt==4.0.1                 # DO NOT BUMP. passlib 1.7.4 reads bcrypt.__about__,
+                              # removed in bcrypt 4.1. On 5.x every hash fails with
+                              # "password cannot be longer than 72 bytes" -- on a
+                              # 9-character password. If you see that, check this pin.
+
+# --- tests ---
+pytest==9.1.1
+pytest-asyncio==1.4.0
+aiosqlite==0.22.1
