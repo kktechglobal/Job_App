@@ -7,8 +7,8 @@ from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import selectinload
 
 from app import models as m
-from app.application.enums import ApplicationStatus
-from app.core.enums import CardBrand, PaymentProvider, SocialPlatform
+from app.applications.enums import ApplicationStatus
+from app.global_enums import CardBrand, PaymentProvider, SocialPlatform
 from app.users.enums import UserRole
 from tests.factories import make_job, make_user
 
@@ -229,7 +229,7 @@ async def test_impossible_expiry_month_rejected(session):
 async def test_promotion_knows_which_job(session):
     """The old table had no job_id at all -- it could not say what was promoted."""
     from datetime import datetime, timedelta, timezone
-    from app.my_jobs_promote_job.enums import PromotionPlan
+    from app.jobs.enums import PromotionPlan
 
     _, _, _, _, job = await seed(session)
     promo = m.JobPromotion(

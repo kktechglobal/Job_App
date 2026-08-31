@@ -1,13 +1,19 @@
+import re
 from datetime import datetime, timedelta, timezone
 from decimal import Decimal
 
 from app import models as m
-from app.job_post.enums import ExperienceLevel, JobLevel, JobType, SalaryType
+from app.jobs.enums import ExperienceLevel, JobLevel, JobType, SalaryType
 from app.users.enums import UserRole
 
 
-def make_user(email="dev@mail.com", role=UserRole.CANDIDATE, name="Ken Dev"):
-    return m.User(email=email, hashed_password="x" * 60, full_name=name, role=role)
+def make_user(email="dev@mail.com", role=UserRole.CANDIDATE, name="Ken Dev", username=None):
+    # username is unique and NOT NULL, so derive a stable one from the email
+    # rather than making every caller invent one.
+    handle = username or re.sub(r"[^a-z0-9_]", "", email.split("@")[0].lower())
+    return m.User(
+        email=email, username=handle, hashed_password="x" * 60, full_name=name, role=role
+    )
 
 
 def make_job(employer_id, *, salary_min="100000.00", salary_max="200000.00", **kw):

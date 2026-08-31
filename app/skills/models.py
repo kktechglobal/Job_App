@@ -13,8 +13,8 @@ from sqlalchemy.orm import Mapped, mapped_column, relationship
 from app.database.base import Base
 
 if TYPE_CHECKING:
-    from app.candidate_founding_profile.models import CandidateProfile
-    from app.job_post.models import JobPost
+    from app.candidates.models import CandidateProfile
+    from app.jobs.models import JobPost
 
 
 candidate_skills = Table(
