@@ -4,26 +4,24 @@ Defining a model class registers its table on Base.metadata, and create_all()
 only creates what is registered -- so every new model must be added here.
 """
 
-from app.application.models import Application
-from app.candidate_card.models import CandidateCard
-from app.candidate_founding_profile.models import CandidateProfile
-from app.candidate_social_media.models import CandidateSocialLink
-from app.company_contact.models import CompanyContact
-from app.company_founding_info.models import CompanyFoundingInfo
-from app.company_socialmedia.models import CompanySocialLink
-from app.employer_card.models import EmployerCard
-from app.employer_profile.models import EmployerProfile
-from app.interview.models import Interview
-from app.job_post.models import JobPost
-from app.my_jobs_promote_job.models import JobPromotion
-from app.setting_account.models import AccountSetting
+from app.admin.models import AdminActionLog
+from app.applications.models import Application
+from app.auth.models import PasswordResetToken, RefreshToken
+from app.candidates.models import CandidateCard, CandidateProfile, CandidateSocialLink
+from app.companies.models import (
+    CompanyContact, CompanyFoundingInfo, CompanySocialLink, EmployerCard, EmployerProfile,
+)
+from app.interviews.models import Interview
+from app.jobs.models import JobPost, JobPromotion
+from app.notifications.models import Notification
 from app.skills.models import Skill, candidate_skills, job_required_skills
-from app.users.models import User
+from app.users.models import AccountSetting, User
 
 __all__ = [
-    "AccountSetting", "Application", "CandidateCard", "CandidateProfile",
-    "CandidateSocialLink", "CompanyContact", "CompanyFoundingInfo",
-    "CompanySocialLink", "EmployerCard", "EmployerProfile", "Interview",
-    "JobPost", "JobPromotion", "Skill", "User",
+    "AccountSetting", "AdminActionLog", "Application", "CandidateCard",
+    "PasswordResetToken", "RefreshToken",
+    "CandidateProfile", "CandidateSocialLink", "CompanyContact",
+    "CompanyFoundingInfo", "CompanySocialLink", "EmployerCard", "EmployerProfile",
+    "Interview", "JobPost", "JobPromotion", "Notification", "Skill", "User",
     "candidate_skills", "job_required_skills",
 ]

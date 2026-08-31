@@ -1,33 +1,48 @@
-from pydantic import BaseModel, EmailStr, Field
+"""Shapes for an account and its preferences.
+
+Registration and password schemas live in app/auth/ -- this domain describes
+what an account *is*, not how someone proves they own it.
+"""
+
 from datetime import datetime
-from typing import Optional, List
-#from app.users.schemas import users
+from typing import Optional
 
-# Auth & User Schemas
-class Token(BaseModel):
-    access_token: str
-    token_type: str
+from pydantic import BaseModel, ConfigDict, EmailStr, Field
 
-class UserCreate(BaseModel):
-    email: EmailStr
-    password: str
-    full_name: str
-    #role: users
+from app.users.enums import UserRole
+
+
+class UserUpdate(BaseModel):
+    """Email is absent on purpose: changing it has to re-run verification,
+    which is a separate flow, not a field on this one."""
+
+    full_name: Optional[str] = Field(default=None, min_length=1, max_length=200)
+
 
 class UserResponse(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
     id: int
     email: EmailStr
+    username: str
     full_name: str
-   # role: users
+    role: UserRole
     is_active: bool
-
-    class Config:
-        from_attributes = True
-
-class UserLogin(BaseModel):
-    email: EmailStr
-    password: str
+    is_email_verified: bool
+    created_at: datetime
 
 
-class UserLogout(BaseModel):
-    message: str = Field(default="Successfully logged out")
+class AccountSettingUpdate(BaseModel):
+    email_notifications: Optional[bool] = None
+    job_alert_emails: Optional[bool] = None
+    profile_is_public: Optional[bool] = None
+
+
+class AccountSettingResponse(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
+    id: int
+    user_id: int
+    email_notifications: bool
+    job_alert_emails: bool
+    profile_is_public: bool

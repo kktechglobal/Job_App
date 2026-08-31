@@ -1,52 +1,62 @@
-"""Application entry point.
+"""Application entry point: creates the app, wires startup/shutdown, and
+includes the routers. No business logic or route bodies live here.
 
-Notice what is NOT here: no business logic, no SQL, no route bodies. main.py
-only creates the app, defines its startup/shutdown, and plugs in the routers.
-When a file's whole job fits on one screen, you can see the shape of the
-project without reading any of it.
+Domains with more than one API surface keep each in its own module: jobs/board
+is what anyone signed in can search, jobs/management is what an employer does
+to their own postings -- two audiences, two gates, two files.
 """
 
 from contextlib import asynccontextmanager
 
 from fastapi import FastAPI
 
-
 from app.database.db import init_models, dispose_engine
 
-
-from app.users.routers import routers as users_router
-from app.job_post.routers import routers as job_posts_router
-from app.interview.routers import routers as interview_router   
-from app.employer_profile.routers import routers as employer_profile_router
-from app.application.routers import routers as application_router
+from app.admin import router as admin
+from app.applications import router as applications
+from app.auth import router as auth
+from app.candidates.cards import router as candidate_cards
+from app.candidates.profile import router as candidate_profile
+from app.companies.cards import router as employer_cards
+from app.companies.profile import router as companies
+from app.interviews import router as interviews
+from app.jobs.board import router as job_board
+from app.jobs.management import router as job_management
+from app.users import router as users
 
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    # Everything before the yield runs once on startup...
     await init_models()
     yield
-    # ...and everything after it runs once on shutdown.
     await dispose_engine()
 
 
-app = FastAPI(title="Class Demo API", lifespan=lifespan)
+app = FastAPI(title="Job Recruitment Platform", lifespan=lifespan)
 
-app.include_router(users_router)
-app.include_router(job_posts_router)
-app.include_router(interview_router)
-app.include_router(employer_profile_router)
-app.include_router(application_router)
+# Identity first, then the two account types, then what they do to each other.
+app.include_router(auth.router)
+app.include_router(users.router)
 
+app.include_router(candidate_profile.router)
+app.include_router(candidate_cards.router)
 
+app.include_router(companies.router)
+app.include_router(employer_cards.router)
 
+app.include_router(job_board.router)
+app.include_router(job_management.router)
+app.include_router(applications.router)
+app.include_router(interviews.router)
 
-
-
-# The feed is not plugged in yet. It only makes sense once we have login, so it
-# waits in reference/feed.py until we cover authentication.
+app.include_router(admin.router)
 
 
 @app.get("/", tags=["meta"])
 async def root():
     return {"status": "ok", "docs": "/docs"}
+
+
+
+
+add comment

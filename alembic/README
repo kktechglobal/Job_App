@@ -1,0 +1,18 @@
+Migrations.
+
+Create the first revision against a running database:
+
+    alembic revision --autogenerate -m "initial schema"
+    alembic upgrade head
+
+Autogenerate compares app/models.py against the database, so a model that is
+not imported there is invisible to it -- and alembic will propose to DROP its
+table. Add every new model to app/models.py before generating.
+
+app/database/db.py still calls create_all() on startup, which is convenient
+for a first run but only ever CREATEs -- it never ALTERs. Once migrations are
+the source of truth, drop that call from the lifespan in app/main.py.
+
+Generate it against POSTGRES, not SQLite. Autogenerating against SQLite bakes
+in that dialect's defaults -- server_default=text('(CURRENT_TIMESTAMP)') where
+Postgres wants now() -- and those defaults end up in the real schema.
