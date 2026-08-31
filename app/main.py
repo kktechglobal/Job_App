@@ -55,8 +55,3 @@ app.include_router(admin.router)
 @app.get("/", tags=["meta"])
 async def root():
     return {"status": "ok", "docs": "/docs"}
-
-
-
-
-add comment
